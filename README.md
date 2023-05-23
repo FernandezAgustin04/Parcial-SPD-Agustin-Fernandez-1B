@@ -4,6 +4,8 @@
 
 # MONTACARGAS
 Este proyecto consiste en un código para controlar un elevador de pisos utilizando Arduino. El sistema cuenta con botones para subir, bajar y detenerse, así como LEDs indicadores y un display de 7 segmentos para mostrar el piso actual.
+![Tinkercad](./img/ArduinoTinkercad.jpg)
+
 
 ## Pines utilizados
 - `ledVerdePin`: Pin utilizado para el LED verde.
