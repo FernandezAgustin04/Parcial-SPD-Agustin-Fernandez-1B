@@ -1,0 +1,227 @@
+// Defino los pines a utilizar para los LEDs y el display
+
+#define ledVerdePin 10
+#define ledRojoPin  9
+
+#define displayAPin 8
+#define displayBPin 7
+#define displayCPin 6
+#define displayDPin 5
+#define displayEPin 4
+#define displayFPin 3
+#define displayGPin 2
+
+#define botonSubirPin 13
+#define botonBajarPin 11
+#define botonDetenerPin 12
+
+int contador = 0;
+
+int pisoAnterior = -1;  // Variable para almacenar el piso anterior
+
+// Variables para el debouncing
+int ultimoEstadoSubir = HIGH;
+int ultimoEstadoDetener = HIGH;
+int ultimoEstadoBajar = HIGH;
+int ultimoTiempoDebounce = 0;
+int debounceDelay = 50;
+
+void setup() {
+  // Inicializo los pines de los LEDs y el display como salidas
+  pinMode(botonSubirPin, INPUT_PULLUP);
+  pinMode(botonBajarPin, INPUT_PULLUP);
+  pinMode(botonDetenerPin, INPUT_PULLUP);
+  pinMode(ledVerdePin, OUTPUT);
+  pinMode(ledRojoPin, OUTPUT);
+  pinMode(displayAPin, OUTPUT);
+  pinMode(displayBPin, OUTPUT);
+  pinMode(displayCPin, OUTPUT);
+  pinMode(displayDPin, OUTPUT);
+  pinMode(displayEPin, OUTPUT);
+  pinMode(displayFPin, OUTPUT);
+  pinMode(displayGPin, OUTPUT);
+  
+  // Inicializo el puerto serie para mostrar los resultados en el Monitor Serial
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Obtener el estado actual de los pulsadores
+  int estadoSubir = digitalRead(botonSubirPin);
+  int estadoDetener = digitalRead(botonDetenerPin);
+  int estadoBajar = digitalRead(botonBajarPin);
+
+  // Verificar si ha pasado suficiente tiempo para considerar el estado actual
+  // del pulsador como válido y no un rebote
+  if (millis() - ultimoTiempoDebounce > debounceDelay) {
+    // Verificar si el estado del pulsador de subir ha cambiado
+    if (estadoSubir != ultimoEstadoSubir) {
+      if (estadoSubir == LOW) {
+        Serial.println("Pulsador de subir presionado");
+        digitalWrite(ledVerdePin, HIGH);
+        digitalWrite(ledRojoPin, LOW);
+        contador++;
+        displayNumero(contador);
+        if (contador > 9) {
+          contador = 9;  // Establecer el límite superior en 9
+        }
+        mostrarMensajePiso(contador);  // Mostrar el piso actual
+      }
+    }
+    // Actualizar el último estado del pulsador de subir
+    ultimoEstadoSubir = estadoSubir;
+
+    // Verificar si el estado del pulsador de detener ha cambiado
+    if (estadoDetener != ultimoEstadoDetener) {
+      if (estadoDetener == LOW) {
+        Serial.println("Pulsador de detener presionado");
+        digitalWrite(ledRojoPin, HIGH);
+        digitalWrite(ledVerdePin, LOW);
+      }
+    }
+    // Actualizar el último estado del pulsador de detener
+    ultimoEstadoDetener = estadoDetener;
+
+    // Verificar si el estado del pulsador de bajar ha cambiado
+    if (estadoBajar != ultimoEstadoBajar) {
+      if (estadoBajar == LOW) {
+        Serial.println("Pulsador de bajar presionado");
+        digitalWrite(ledVerdePin, HIGH);
+        digitalWrite(ledRojoPin, LOW);
+        contador--;
+        displayNumero(contador);
+        if (contador < 0) {
+          contador = 0;  // Establecer el límite inferior en 0
+        }
+        mostrarMensajePiso(contador);  // Mostrar el piso actual
+      }
+    }
+    // Actualizar el último estado del pulsador de bajar
+    ultimoEstadoBajar = estadoBajar;
+
+    // Actualizar el último tiempo de debounce
+    ultimoTiempoDebounce = millis();
+  }
+}
+
+// Función para mostrar un mensaje con el número de piso actual
+void mostrarMensajePiso(int pisoActual) {
+  if (pisoActual != pisoAnterior) {
+    Serial.print("Piso actual: ");
+    Serial.println(pisoActual);
+    pisoAnterior = pisoActual;
+  }
+}
+
+
+void displayNumero(int contador) {
+  switch (contador) {
+    case 0:
+      Serial.println("Piso numero: ");
+  	  Serial.println (contador);
+	  digitalWrite(displayAPin, HIGH);
+      digitalWrite(displayBPin, HIGH);
+      digitalWrite(displayCPin, HIGH);
+	  digitalWrite(displayDPin, HIGH);
+	  digitalWrite(displayEPin, HIGH);
+	  digitalWrite(displayFPin, HIGH);
+	  digitalWrite(displayGPin, LOW);
+      break;
+    case 1:
+      digitalWrite(displayAPin, LOW);
+      digitalWrite(displayBPin, HIGH);
+      digitalWrite(displayCPin, HIGH);
+      digitalWrite(displayDPin, LOW);
+      digitalWrite(displayEPin, LOW);
+      digitalWrite(displayFPin, LOW);
+      digitalWrite(displayGPin, LOW);
+      break;
+    case 2:
+      digitalWrite(displayAPin, HIGH);
+      digitalWrite(displayBPin, HIGH);
+      digitalWrite(displayCPin, LOW);
+      digitalWrite(displayDPin, HIGH);
+      digitalWrite(displayEPin, HIGH);
+      digitalWrite(displayFPin, LOW);
+      digitalWrite(displayGPin, HIGH);
+      break;
+    case 3:
+      digitalWrite(displayAPin, HIGH);
+      digitalWrite(displayBPin, HIGH);
+      digitalWrite(displayCPin, HIGH);
+      digitalWrite(displayDPin, HIGH);
+      digitalWrite(displayEPin, LOW);
+      digitalWrite(displayFPin, LOW);
+      digitalWrite(displayGPin, HIGH);
+      break;
+    case 4:
+      digitalWrite(displayAPin, LOW);
+      digitalWrite(displayBPin, HIGH);
+      digitalWrite(displayCPin, HIGH);
+      digitalWrite(displayDPin, LOW);
+      digitalWrite(displayEPin, LOW);
+      digitalWrite(displayFPin, HIGH);
+      digitalWrite(displayGPin, HIGH);
+      break;
+    case 5:
+      digitalWrite(displayAPin, HIGH);
+      digitalWrite(displayBPin, LOW);
+      digitalWrite(displayCPin, HIGH);
+      digitalWrite(displayDPin, HIGH);
+      digitalWrite(displayEPin, LOW);
+      digitalWrite(displayFPin, HIGH);
+      digitalWrite(displayGPin, HIGH);
+      break;
+    case 6:
+      digitalWrite(displayAPin, HIGH);
+      digitalWrite(displayBPin, LOW);
+      digitalWrite(displayCPin, HIGH);
+      digitalWrite(displayDPin, HIGH);
+      digitalWrite(displayEPin, HIGH);
+      digitalWrite(displayFPin, HIGH);
+      digitalWrite(displayGPin, HIGH);	
+      break;
+    case 7:
+      digitalWrite(displayAPin, HIGH);
+      digitalWrite(displayBPin, HIGH);
+      digitalWrite(displayCPin, HIGH);
+      digitalWrite(displayDPin, LOW);
+      digitalWrite(displayEPin, LOW);
+      digitalWrite(displayFPin, LOW);
+      digitalWrite(displayGPin, LOW);	
+      break;
+    case 8:
+      digitalWrite(displayAPin, HIGH);
+      digitalWrite(displayBPin, HIGH);
+      digitalWrite(displayCPin, HIGH);
+      digitalWrite(displayDPin, HIGH);
+      digitalWrite(displayEPin, HIGH);
+      digitalWrite(displayFPin, HIGH);
+      digitalWrite(displayGPin, HIGH);
+      break;
+    case 9:
+      digitalWrite(displayAPin, HIGH);
+      digitalWrite(displayBPin, HIGH);
+      digitalWrite(displayCPin, HIGH);
+      digitalWrite(displayDPin, LOW);
+      digitalWrite(displayEPin, LOW);
+      digitalWrite(displayFPin, HIGH);
+      digitalWrite(displayGPin, HIGH);
+      break;
+    default:
+      // Si el número no está en el rango válido, apaga todos los segmentos del display
+      apagarDisplay();
+      break;
+  }
+}
+
+// Función para apagar el display
+void apagarDisplay() {
+  digitalWrite(displayAPin, LOW);
+  digitalWrite(displayBPin, LOW);
+  digitalWrite(displayCPin, LOW);
+  digitalWrite(displayDPin, LOW);
+  digitalWrite(displayEPin, LOW);
+  digitalWrite(displayFPin, LOW);
+  digitalWrite(displayGPin, LOW);
+}
